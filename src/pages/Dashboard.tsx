@@ -5,7 +5,7 @@ import AgentCard from "@/components/dashboard/AgentCard";
 import StatsCard from "@/components/dashboard/StatsCard";
 import WorkflowCard from "@/components/dashboard/WorkflowCard";
 import WorkflowDiagram from "@/components/dashboard/WorkflowDiagram";
-import { Activity, FileText, Check, Database } from "lucide-react";
+import { Activity, FileText, Check, Database, Users } from "lucide-react";
 import { Link } from "react-router-dom";
 
 const Dashboard = () => {
