@@ -12,6 +12,7 @@ import Dashboard from "./pages/Dashboard";
 import Agents from "./pages/Agents";
 import AgentDetail from "./pages/AgentDetail";
 import Workflows from "./pages/Workflows";
+import Tasks from "./pages/Tasks";
 import Data from "./pages/Data";
 import Documentation from "./pages/Documentation";
 import Settings from "./pages/Settings";
@@ -31,6 +32,7 @@ const App = () => (
             <Route path="/agents" element={<MainLayout><Agents /></MainLayout>} />
             <Route path="/agents/:agentId" element={<MainLayout><AgentDetail /></MainLayout>} />
             <Route path="/workflows" element={<MainLayout><Workflows /></MainLayout>} />
+            <Route path="/tasks" element={<MainLayout><Tasks /></MainLayout>} />
             <Route path="/data" element={<MainLayout><Data /></MainLayout>} />
             <Route path="/documentation" element={<MainLayout><Documentation /></MainLayout>} />
             <Route path="/settings" element={<MainLayout><Settings /></MainLayout>} />

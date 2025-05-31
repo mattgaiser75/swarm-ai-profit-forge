@@ -15,6 +15,11 @@ const Dashboard = () => {
   const enabledWorkflows = workflows.filter(workflow => workflow.enabled);
   const connectedDataSources = dataSources.filter(ds => ds.connected);
 
+  // Calculate total tasks across all agents
+  const totalTasks = agents.reduce((sum, agent) => sum + agent.tasks.length, 0);
+  const activeTasks = agents.reduce((sum, agent) => 
+    sum + agent.tasks.filter(task => task.enabled).length, 0);
+
   // Choose the main workflow to display
   const mainWorkflow = workflows[0];
   
@@ -43,14 +48,16 @@ const Dashboard = () => {
           trend="up"
           trendValue="+1 this week"
         />
-        <StatsCard 
-          title="Tasks Completed" 
-          value={248} 
-          description="Last 30 days"
-          icon={<Check size={16} />}
-          trend="up"
-          trendValue="+12% from last month"
-        />
+        <Link to="/tasks">
+          <StatsCard 
+            title="Active Tasks" 
+            value={activeTasks} 
+            description={`${totalTasks} total tasks`}
+            icon={<Check size={16} />}
+            trend="up"
+            trendValue="+12% from last month"
+          />
+        </Link>
         <StatsCard 
           title="Connected Data Sources" 
           value={`${connectedDataSources.length}/${dataSources.length}`} 
