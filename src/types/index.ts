@@ -81,3 +81,18 @@ export interface PlatformComparison {
     notes?: string;
   };
 }
+
+export interface Campaign {
+  id: string;
+  name: string;
+  description: string;
+  goal: string;
+  enabled: boolean;
+  managerId: string;
+  managerName: string;
+  assignedAgents: string[];
+  startDate: string;
+  endDate?: string;
+  status: "active" | "paused" | "completed" | "draft";
+  progress: number;
+}
