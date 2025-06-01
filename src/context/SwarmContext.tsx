@@ -5,7 +5,8 @@ import {
   AIModel, 
   Workflow,
   DataSource,
-  PlatformComparison
+  PlatformComparison,
+  Campaign
 } from "@/types";
 
 // Mock data
@@ -14,6 +15,7 @@ import { mockModels } from "@/data/mockModels";
 import { mockWorkflows } from "@/data/mockWorkflows";
 import { mockDataSources } from "@/data/mockDataSources";
 import { mockPlatformComparison } from "@/data/mockPlatformComparison";
+import { mockCampaigns } from "@/data/mockCampaigns";
 
 interface SwarmContextType {
   agents: AgentConfig[];
@@ -21,10 +23,12 @@ interface SwarmContextType {
   workflows: Workflow[];
   dataSources: DataSource[];
   platformComparison: PlatformComparison[];
+  campaigns: Campaign[];
   updateAgent: (agent: AgentConfig) => void;
   toggleAgentStatus: (agentId: string) => void;
   updateAgentModel: (agentId: string, modelId: string) => void;
   isModelCompatibleWithAgent: (model: AIModel, agent: AgentConfig) => boolean;
+  toggleCampaignStatus: (campaignId: string) => void;
 }
 
 const SwarmContext = createContext<SwarmContextType | undefined>(undefined);
@@ -35,6 +39,7 @@ export const SwarmProvider: React.FC<{ children: React.ReactNode }> = ({ childre
   const [workflows] = useState<Workflow[]>(mockWorkflows);
   const [dataSources] = useState<DataSource[]>(mockDataSources);
   const [platformComparison] = useState<PlatformComparison[]>(mockPlatformComparison);
+  const [campaigns, setCampaigns] = useState<Campaign[]>(mockCampaigns);
 
   const updateAgent = (updatedAgent: AgentConfig) => {
     setAgents(agents.map(agent => 
@@ -69,6 +74,12 @@ export const SwarmProvider: React.FC<{ children: React.ReactNode }> = ({ childre
       .every(capability => model.capabilities.includes(capability));
   };
 
+  const toggleCampaignStatus = (campaignId: string) => {
+    setCampaigns(campaigns.map(campaign => 
+      campaign.id === campaignId ? { ...campaign, enabled: !campaign.enabled } : campaign
+    ));
+  };
+
   return (
     <SwarmContext.Provider value={{
       agents,
@@ -76,10 +87,12 @@ export const SwarmProvider: React.FC<{ children: React.ReactNode }> = ({ childre
       workflows,
       dataSources,
       platformComparison,
+      campaigns,
       updateAgent,
       toggleAgentStatus,
       updateAgentModel,
-      isModelCompatibleWithAgent
+      isModelCompatibleWithAgent,
+      toggleCampaignStatus
     }}>
       {children}
     </SwarmContext.Provider>

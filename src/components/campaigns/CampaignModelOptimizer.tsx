@@ -24,7 +24,7 @@ const CampaignModelOptimizer = ({ campaignId, open, onOpenChange }: CampaignMode
   const { campaigns, agents, models, updateAgentModel, isModelCompatibleWithAgent } = useSwarm();
   
   const campaign = campaigns.find(c => c.id === campaignId);
-  const campaignAgents = campaign?.assignedAgents.map(agentId => 
+  const campaignAgents = campaign?.assignedAgents.map((agentId: string) => 
     agents.find(a => a.id === agentId)
   ).filter(Boolean) || [];
 
@@ -34,6 +34,8 @@ const CampaignModelOptimizer = ({ campaignId, open, onOpenChange }: CampaignMode
 
   const generateRecommendations = () => {
     const recommendations = campaignAgents.map(agent => {
+      if (!agent) return null;
+      
       const agentCapabilities = [...new Set(agent.tasks.flatMap(task => task.requiredCapabilities))];
       
       // Find models that have all required capabilities
@@ -60,7 +62,7 @@ const CampaignModelOptimizer = ({ campaignId, open, onOpenChange }: CampaignMode
         capabilityMatch: recommendedModel ? 
           agentCapabilities.filter(cap => recommendedModel.capabilities.includes(cap)).length / agentCapabilities.length * 100 : 0
       };
-    });
+    }).filter(Boolean);
 
     setOptimizationRecommendations(recommendations);
   };
@@ -234,59 +236,62 @@ const CampaignModelOptimizer = ({ campaignId, open, onOpenChange }: CampaignMode
           </TabsContent>
 
           <TabsContent value="manual" className="space-y-4">
-            {campaignAgents.map((agent) => (
-              <Card key={agent.id}>
-                <CardContent className="p-4">
-                  <div className="flex items-center justify-between mb-4">
-                    <div>
-                      <h3 className="font-semibold">{agent.name}</h3>
-                      <p className="text-sm text-muted-foreground">{agent.description}</p>
+            {campaignAgents.map((agent) => {
+              if (!agent) return null;
+              return (
+                <Card key={agent.id}>
+                  <CardContent className="p-4">
+                    <div className="flex items-center justify-between mb-4">
+                      <div>
+                        <h3 className="font-semibold">{agent.name}</h3>
+                        <p className="text-sm text-muted-foreground">{agent.description}</p>
+                      </div>
+                      <Badge variant="outline">{agent.type}</Badge>
                     </div>
-                    <Badge variant="outline">{agent.type}</Badge>
-                  </div>
 
-                  <div className="space-y-3">
-                    <div>
-                      <label className="text-sm font-medium">Select AI Model</label>
-                      <Select
-                        value={agent.model.id}
-                        onValueChange={(modelId) => handleModelChange(agent.id, modelId)}
-                      >
-                        <SelectTrigger>
-                          <SelectValue />
-                        </SelectTrigger>
-                        <SelectContent>
-                          {models.map((model) => {
-                            const isCompatible = isModelCompatibleWithAgent(model, agent);
-                            return (
-                              <SelectItem 
-                                key={model.id} 
-                                value={model.id}
-                                disabled={!isCompatible}
-                              >
-                                <div className="flex items-center justify-between w-full">
-                                  <span>{model.name}</span>
-                                  <div className="flex items-center gap-2 ml-4">
-                                    <Badge variant="outline">{model.provider}</Badge>
-                                    <span className="text-xs">${model.costPer1KTokens}</span>
-                                    {!isCompatible && <AlertTriangle className="h-3 w-3 text-amber-500" />}
+                    <div className="space-y-3">
+                      <div>
+                        <label className="text-sm font-medium">Select AI Model</label>
+                        <Select
+                          value={agent.model.id}
+                          onValueChange={(modelId) => handleModelChange(agent.id, modelId)}
+                        >
+                          <SelectTrigger>
+                            <SelectValue />
+                          </SelectTrigger>
+                          <SelectContent>
+                            {models.map((model) => {
+                              const isCompatible = isModelCompatibleWithAgent(model, agent);
+                              return (
+                                <SelectItem 
+                                  key={model.id} 
+                                  value={model.id}
+                                  disabled={!isCompatible}
+                                >
+                                  <div className="flex items-center justify-between w-full">
+                                    <span>{model.name}</span>
+                                    <div className="flex items-center gap-2 ml-4">
+                                      <Badge variant="outline">{model.provider}</Badge>
+                                      <span className="text-xs">${model.costPer1KTokens}</span>
+                                      {!isCompatible && <AlertTriangle className="h-3 w-3 text-amber-500" />}
+                                    </div>
                                   </div>
-                                </div>
-                              </SelectItem>
-                            );
-                          })}
-                        </SelectContent>
-                      </Select>
-                    </div>
+                                </SelectItem>
+                              );
+                            })}
+                          </SelectContent>
+                        </Select>
+                      </div>
 
-                    <div className="text-xs text-muted-foreground">
-                      <p>Required capabilities: {agent.tasks.flatMap(t => t.requiredCapabilities).join(", ")}</p>
-                      <p>Current model capabilities: {agent.model.capabilities.join(", ")}</p>
+                      <div className="text-xs text-muted-foreground">
+                        <p>Required capabilities: {agent.tasks.flatMap(t => t.requiredCapabilities).join(", ")}</p>
+                        <p>Current model capabilities: {agent.model.capabilities.join(", ")}</p>
+                      </div>
                     </div>
-                  </div>
-                </CardContent>
-              </Card>
-            ))}
+                  </CardContent>
+                </Card>
+              );
+            })}
           </TabsContent>
         </Tabs>
 
