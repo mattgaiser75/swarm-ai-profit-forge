@@ -8,6 +8,7 @@ import {
   FileText, 
   Database, 
   Activity,
+  Target,
   Menu,
   X
 } from "lucide-react";
@@ -44,6 +45,7 @@ const MainLayout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
     { to: "/", icon: <Home size={20} />, label: "Dashboard" },
     { to: "/agents", icon: <Users size={20} />, label: "Agents" },
     { to: "/workflows", icon: <Activity size={20} />, label: "Workflows" },
+    { to: "/campaigns", icon: <Target size={20} />, label: "Campaigns" },
     { to: "/data", icon: <Database size={20} />, label: "Data Storage" },
     { to: "/documentation", icon: <FileText size={20} />, label: "Documentation" },
     { to: "/settings", icon: <Settings size={20} />, label: "Settings" },
